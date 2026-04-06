@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__chrome-devtools__new_page",
+      "mcp__chrome-devtools__take_screenshot",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --yes)",
+      "Bash(mkdir -p C:/repos/frankbees-tmp)",
+      "Bash(mv C:/repos/frankbees/CLAUDE.md C:/repos/frankbees/PLAN.md C:/repos/frankbees/skills-lock.json C:/repos/frankbees-tmp/)"
+    ]
+  }
+}
