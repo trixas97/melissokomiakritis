@@ -1,0 +1,54 @@
+{
+  "nav": {
+    "home": "Home",
+    "shop": "Shop",
+    "faqs": "FAQs",
+    "about": "About Us",
+    "contact": "Contact"
+  },
+  "home": {
+    "hero_title": "Pure Cretan Queen Bees",
+    "hero_subtitle": "Bred with care in the heart of Crete",
+    "cta": "Shop Now",
+    "categories_title": "What We Offer",
+    "cat_queens": "Queen Bees",
+    "cat_queens_desc": "Select Cecropia & Caucasica queens, carefully bred for vitality and temperament.",
+    "cat_cells": "Queen Cells",
+    "cat_cells_desc": "Ready-to-introduce queen cells for seamless hive requeening.",
+    "cat_colonies": "Bee Colonies",
+    "cat_colonies_desc": "Healthy, established colonies ready to produce from day one.",
+    "cat_cta": "View Products",
+    "trust_title": "Why Μελισσοκομία Κρήτης",
+    "trust_heritage": "Cretan Heritage",
+    "trust_heritage_desc": "Generations of beekeeping knowledge from the island where Minoan apiaries first thrived.",
+    "trust_healthy": "Healthy & Strong",
+    "trust_healthy_desc": "Every queen is inspected for health, laying pattern, and genetic vigor before shipment.",
+    "trust_service": "Personal Service",
+    "trust_service_desc": "Orders confirmed by phone — we walk you through care, timing, and introduction."
+  },
+  "shop": {
+    "title": "Our Products",
+    "shipping_notice": "We ship live bees within Greece only. Orders are confirmed by phone/email after submission.",
+    "price_hidden": "Contact us for pricing",
+    "order_button": "Place Order"
+  },
+  "order_form": {
+    "name": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "quantity": "Quantity",
+    "notes": "Notes (optional)",
+    "submit": "Submit Order",
+    "success": "Order received! We will contact you shortly to confirm.",
+    "error": "Something went wrong. Please try again."
+  },
+  "faqs": { "title": "Frequently Asked Questions" },
+  "about": { "title": "About Us" },
+  "contact": { "title": "Contact" },
+  "footer": {
+    "tagline": "Pure Cretan queen bees, bred with care in the heart of Crete.",
+    "quick_links": "Quick Links",
+    "contact_heading": "Contact",
+    "rights": "All rights reserved."
+  }
+}
