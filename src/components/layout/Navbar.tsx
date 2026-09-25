@@ -3,9 +3,16 @@
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
+import type { ImageSource } from '@/lib/media';
 import LanguageToggle from './LanguageToggle';
+import Logo from './Logo';
 
-export default function Navbar() {
+type Props = {
+  siteName: string;
+  logo: ImageSource | null; // from /admin → Site settings, passed in by the locale layout
+};
+
+export default function Navbar({ siteName, logo }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const t = useTranslations('nav');
@@ -18,9 +25,12 @@ export default function Navbar() {
 
   const navLinks = [
     { href: '/' as const, label: t('home') },
-    { href: '/shop' as const, label: t('shop') },
-    { href: '/faqs' as const, label: t('faqs') },
     { href: '/about' as const, label: t('about') },
+    { href: '/queens' as const, label: t('queens') },
+    { href: '/cells' as const, label: t('cells') },
+    { href: '/nucs' as const, label: t('nucs') },
+    { href: '/faqs' as const, label: t('faqs') },
+    { href: '/gallery' as const, label: t('gallery') },
     { href: '/contact' as const, label: t('contact') },
   ];
 
@@ -36,16 +46,16 @@ export default function Navbar() {
         <div className="flex h-20 justify-between">
           {/* Logo */}
           <Link href="/" className="group pt-1">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/logo.png"
-              alt="Μελισσοκομία Κρήτης"
+            <Logo
+              logo={logo}
+              siteName={siteName}
+              preload
               className="h-14 w-auto object-contain transition-opacity duration-300 group-hover:opacity-80"
             />
           </Link>
 
           {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-0.5">
+          <div className="hidden xl:flex items-center gap-0.5">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -63,7 +73,7 @@ export default function Navbar() {
 
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/[0.08] transition-colors"
+              className="xl:hidden p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/[0.08] transition-colors"
               aria-label="Toggle menu"
               aria-expanded={mobileOpen}
             >
@@ -94,7 +104,7 @@ export default function Navbar() {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="md:hidden -mx-4 px-4 pb-4 pt-2 space-y-0.5 border-t border-white/[0.06] bg-black/40 backdrop-blur-xl">
+          <div className="xl:hidden -mx-4 px-4 pb-4 pt-2 space-y-0.5 border-t border-white/[0.06] bg-black/40 backdrop-blur-xl">
             {navLinks.map((link) => (
               <Link
                 key={link.href}

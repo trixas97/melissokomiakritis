@@ -32,7 +32,11 @@ Defined as CSS classes in `globals.css`. Use inline `style` for per-component tw
 |-----------------|-------------------------------------|---------------------|
 | `.photo-hero`   | Cretan hillside, golden-hour light  | Hero section        |
 | `.photo-amber`  | Capped honeycomb, warm amber shadow | Product categories  |
-| `.photo-forest` | Thyme forest, morning light         | Trust / Why Us      |
+| `.photo-forest` | Aegean blue, clear sky at dusk      | Why Us, About → Queen rearing |
+| `.photo-olive`  | Wild thyme and olive groves         | About → Nucs        |
+
+`.photo-amber` is also used for About → Beekeeping. Sections pair the gradient with
+`.noise-layer` and `FloatingHexagons` (`src/components/shared/`) for the floating cells.
 
 Each uses 3–4 layered radial gradients over a dark linear base for depth and dimensionality.
 

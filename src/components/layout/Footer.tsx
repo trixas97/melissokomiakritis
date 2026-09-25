@@ -1,14 +1,31 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import type { ImageSource } from "@/lib/media";
+import Logo from "./Logo";
 
-export default function Footer() {
+type Props = {
+  siteName: string;
+  logo: ImageSource | null;
+  tagline?: string | null;
+  address?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  domain?: string | null;
+};
+
+// Content comes from /admin → Site settings (passed in by the locale layout);
+// headings and link labels from /admin → Labels.
+export default function Footer({ siteName, logo, tagline, address, email, phone, domain }: Props) {
   const t = useTranslations("footer");
   const nav = useTranslations("nav");
 
   const quickLinks = [
-    { href: "/shop" as const, label: nav("shop") },
+    { href: "/queens" as const, label: nav("queens") },
+    { href: "/cells" as const, label: nav("cells") },
+    { href: "/nucs" as const, label: nav("nucs") },
     { href: "/about" as const, label: nav("about") },
     { href: "/faqs" as const, label: nav("faqs") },
+    { href: "/gallery" as const, label: nav("gallery") },
     { href: "/contact" as const, label: nav("contact") },
   ];
 
@@ -33,30 +50,22 @@ export default function Footer() {
       />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
-          {/* Brand */}
-          <div>
-            <div className="flex items-center gap-2.5 mb-4">
-              <svg
-                viewBox="0 0 32 32"
-                className="h-6 w-6 text-brand-amber"
-                fill="currentColor"
-              >
-                <path d="M16 2l8 4.6v9.2L16 20.4 8 15.8V6.6L16 2zm0 2.3L10 8v7l6 3.5L22 15V8l-6-3.7z" />
-              </svg>
-              <span className="font-display text-base font-bold text-white tracking-tight">
-                Μελισσοκομία Κρήτης
-              </span>
-            </div>
-            <p className="text-sm leading-relaxed text-white/35">{t("tagline")}</p>
-          </div>
+        {/* Logo, centred above the columns */}
+        <div className="flex flex-col items-center text-center">
+          <Link href="/" className="transition-opacity duration-300 hover:opacity-80">
+            <Logo logo={logo} siteName={siteName} className="h-20 w-auto" />
+          </Link>
+          <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/35">{tagline}</p>
+        </div>
 
+        <div className="mx-auto mt-12 grid max-w-2xl grid-cols-1 gap-10 text-center sm:grid-cols-2">
           {/* Quick links */}
           <div>
             <h3 className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-brand-amber/70 mb-4">
               {t("quick_links")}
             </h3>
-            <ul className="space-y-2.5">
+            {/* Two columns filled top to bottom: 4 links, then the rest */}
+            <ul className="inline-grid grid-flow-col grid-rows-4 gap-x-10 gap-y-2.5">
               {quickLinks.map((link) => (
                 <li key={link.href}>
                   <Link
@@ -76,9 +85,9 @@ export default function Footer() {
               {t("contact_heading")}
             </h3>
             <ul className="space-y-2.5 text-sm text-white/40">
-              <li>Crete, Greece</li>
-              <li>info@melissokomiakritis.gr</li>
-              <li>+30 XXX XXX XXXX</li>
+              {address && <li>{address}</li>}
+              {email && <li>{email}</li>}
+              {phone && <li>{phone}</li>}
             </ul>
           </div>
         </div>
@@ -86,9 +95,9 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-12 pt-6 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-xs text-white/25">
-            &copy; {new Date().getFullYear()} Μελισσοκομία Κρήτης. {t("rights")}
+            &copy; {new Date().getFullYear()} {siteName}. {t("rights")}
           </p>
-          <p className="text-xs text-white/20 tracking-wide">melissokomiakritis.gr</p>
+          {domain && <p className="text-xs text-white/20 tracking-wide">{domain}</p>}
         </div>
       </div>
     </footer>

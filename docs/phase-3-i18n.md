@@ -15,10 +15,10 @@
 
 ```json
 {
-  "nav":        { "home", "shop", "faqs", "about", "contact" },
+  "nav":        { "home", "about", "queens", "cells", "nucs", "faqs", "gallery", "contact" },
   "home":       { "hero_title", "hero_subtitle", "cta", "categories_title",
                   "cat_queens", "cat_queens_desc", "cat_cells", "cat_cells_desc",
-                  "cat_colonies", "cat_colonies_desc", "cat_cta",
+                  "cat_nucs", "cat_nucs_desc", "cat_cta",
                   "trust_title", "trust_heritage", "trust_heritage_desc",
                   "trust_healthy", "trust_healthy_desc", "trust_service", "trust_service_desc" },
   "shop":       { "title", "shipping_notice", "price_hidden", "order_button" },

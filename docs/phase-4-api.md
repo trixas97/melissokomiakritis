@@ -1,31 +1,21 @@
-# Phase 4 — API Routes
+# Phase 4 — Order Submission
 
-## `POST /api/orders`
+Orders are submitted through a **server action**, not a custom API route. `/api/*` is
+served by Payload's REST API (`src/app/(payload)/api/[...slug]`), and the admin panel
+handles all admin reads and writes — so there are no custom admin or auth endpoints.
 
-1. Validate body (`name`, `email`, `phone`, `quantity`, `productId`)
-2. Create Order in DB
-3. Send owner notification email (Resend)
-4. Send customer confirmation email (Resend)
-5. Return `{ success: true }`
+## `createOrder` server action — `src/app/[locale]/<category>/actions.ts` (or shared in `src/components/shop/`)
 
-## `GET /api/admin/orders` (protected)
+1. Parse the form data with a Zod schema (`productId`, `quantity`, `name`, `email`, `phone`, `notes?`)
+2. Check the product exists and is active
+3. `payload.create({ collection: "orders", data: { …, locale } })` via `getPayloadClient()`
+4. Emails are sent from the Orders `afterChange` hook (see Phase 5)
+5. Return `{ success: true }` or `{ success: false, errors }` for the form to display
 
-Returns all orders with product info, sorted by `createdAt` desc.
+## Admin operations
 
-## `PATCH /api/admin/orders/[id]` (protected)
+Handled by the Payload admin at `/admin`:
 
-Body: `{ status: "confirmed" | "completed" | "cancelled" }`
-
-## `GET /api/admin/products` (protected)
-
-Returns all products.
-
-## `PATCH /api/admin/products/[id]` (protected)
-
-Body: any product fields (`price`, `priceHidden`, `nameEl`, `nameEn`, `descEl`, `descEn`)
-
-## `POST /api/auth`
-
-- Body: `{ password: string }`
-- Compares against `ADMIN_PASSWORD` env var
-- Creates `AdminSession`, sets httpOnly cookie
+- Orders list, filtering and status updates → `orders` collection
+- Product editing, price and "price on request" toggle → `products` collection
+- Login → Payload auth (`users` collection)

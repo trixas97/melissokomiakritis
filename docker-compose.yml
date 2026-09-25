@@ -1,17 +1,45 @@
-version: '3.8'
 services:
   app:
-    build: .
+    build:
+      context: .
+      args:
+        S3_PUBLIC_URL: ${S3_PUBLIC_URL:-}
     restart: unless-stopped
     environment:
-      - DATABASE_URL=file:/data/db.sqlite
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
-      - RESEND_API_KEY=${RESEND_API_KEY}
-      - OWNER_EMAIL=${OWNER_EMAIL}
-    volumes:
-      - sqlite_data:/data
+      DATABASE_URL: postgresql://payload:${POSTGRES_PASSWORD}@postgres:5432/frankbees
+      PAYLOAD_SECRET: ${PAYLOAD_SECRET}
+      S3_ENDPOINT: ${S3_ENDPOINT}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY}
+      S3_BUCKET: ${S3_BUCKET}
+      S3_REGION: ${S3_REGION:-auto}
+      S3_PUBLIC_URL: ${S3_PUBLIC_URL}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      OWNER_EMAIL: ${OWNER_EMAIL:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: payload
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: frankbees
+    # Loopback only — lets local dev (`docker compose up postgres`) reach it on
+    # localhost:${POSTGRES_PORT} without exposing it to the internet on the server.
+    # The app container always uses postgres:5432 on the internal network.
     ports:
-      - "3000:3000"
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U payload -d frankbees"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   nginx:
     image: nginx:alpine
     restart: unless-stopped
@@ -25,5 +53,5 @@ services:
       - app
 
 volumes:
-  sqlite_data:
+  postgres_data:
   certbot_certs:

@@ -1,9 +1,12 @@
 {
   "nav": {
     "home": "Home",
-    "shop": "Shop",
-    "faqs": "FAQs",
     "about": "About Us",
+    "queens": "Queens",
+    "cells": "Cells",
+    "nucs": "Bee Nucs",
+    "faqs": "FAQs",
+    "gallery": "Gallery",
     "contact": "Contact"
   },
   "home": {
@@ -15,8 +18,8 @@
     "cat_queens_desc": "Select Cecropia & Caucasica queens, carefully bred for vitality and temperament.",
     "cat_cells": "Queen Cells",
     "cat_cells_desc": "Ready-to-introduce queen cells for seamless hive requeening.",
-    "cat_colonies": "Bee Colonies",
-    "cat_colonies_desc": "Healthy, established colonies ready to produce from day one.",
+    "cat_nucs": "Bee Nucs",
+    "cat_nucs_desc": "Healthy, strong nucs ready to grow into full colonies.",
     "cat_cta": "View Products",
     "trust_title": "Why Μελισσοκομία Κρήτης",
     "trust_heritage": "Cretan Heritage",
@@ -24,7 +27,8 @@
     "trust_healthy": "Healthy & Strong",
     "trust_healthy_desc": "Every queen is inspected for health, laying pattern, and genetic vigor before shipment.",
     "trust_service": "Personal Service",
-    "trust_service_desc": "Orders confirmed by phone — we walk you through care, timing, and introduction."
+    "trust_service_desc": "Orders confirmed by phone — we walk you through care, timing, and introduction.",
+    "available": "Available {range}"
   },
   "shop": {
     "title": "Our Products",
@@ -42,9 +46,17 @@
     "success": "Order received! We will contact you shortly to confirm.",
     "error": "Something went wrong. Please try again."
   },
+  "gallery": { "title": "Gallery" },
   "faqs": { "title": "Frequently Asked Questions" },
-  "about": { "title": "About Us" },
+  "about": {
+    "story_title": "Our Story",
+    "discover": "Discover"
+  },
   "contact": { "title": "Contact" },
+  "months": {
+    "short": { "1": "Jan", "2": "Feb", "3": "Mar", "4": "Apr", "5": "May", "6": "Jun", "7": "Jul", "8": "Aug", "9": "Sep", "10": "Oct", "11": "Nov", "12": "Dec" },
+    "long": { "1": "January", "2": "February", "3": "March", "4": "April", "5": "May", "6": "June", "7": "July", "8": "August", "9": "September", "10": "October", "11": "November", "12": "December" }
+  },
   "footer": {
     "tagline": "Pure Cretan queen bees, bred with care in the heart of Crete.",
     "quick_links": "Quick Links",

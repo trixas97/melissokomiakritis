@@ -2,34 +2,44 @@
   "name": "frankbees",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "payload": "payload",
+    "generate:types": "payload generate:types",
+    "generate:importmap": "payload generate:importmap",
+    "seed": "payload run src/seed.ts",
+    "import-media": "payload run src/scripts/import-media.ts"
+  },
+  "engines": {
+    "node": ">=24.0.0"
   },
   "dependencies": {
-    "@prisma/adapter-better-sqlite3": "^7.6.0",
-    "@prisma/client": "^7.6.0",
-    "better-sqlite3": "^12.8.0",
+    "@payloadcms/db-postgres": "3.81.0",
+    "@payloadcms/next": "3.81.0",
+    "@payloadcms/storage-s3": "3.81.0",
+    "graphql": "^16.14.2",
     "next": "16.2.2",
     "next-intl": "^4.9.0",
-    "prisma": "^7.6.0",
+    "payload": "3.81.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "resend": "^6.10.0"
+    "resend": "^6.10.0",
+    "server-only": "^0.0.1",
+    "sharp": "^0.35.4",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "dotenv": "^17.4.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.2",
     "tailwindcss": "^4",
-    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }
