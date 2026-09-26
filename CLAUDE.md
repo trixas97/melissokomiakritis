@@ -16,7 +16,7 @@ See [PLAN.md](./PLAN.md) for the full build plan, phase-by-phase implementation 
 - **Media storage**: Cloudflare R2 via `@payloadcms/storage-s3` (local disk when `S3_BUCKET` is unset)
 - **Email**: Resend
 - **i18n**: next-intl for UI strings + Payload localization for content (Greek default, English)
-- **Deployment**: Docker (app + Postgres) + Nginx on Hetzner
+- **Deployment**: Docker (app + Postgres) on the shared Hetzner box behind Nginx Proxy Manager; GitHub Actions → `ghcr.io/trixas97/melissokomiakritis`; UAT on every merge, production promoted by SHA — see [docs/phase-8-docker.md](./docs/phase-8-docker.md)
 
 ## Repository State
 
@@ -31,7 +31,7 @@ npm run seed                    # seed products, months, page content and labels
 npm run import-media            # upload the starting photos/logo/video to Media (R2) and attach them (safe to re-run)
 npm run generate:types          # regenerate src/payload-types.ts after changing a collection
 npm run generate:importmap      # regenerate the admin import map after adding custom admin components
-npm run payload migrate:create  # create a DB migration (required before deploying schema changes)
+npm run payload migrate:create <name>  # REQUIRED after any collection/global change — commit src/migrations/
 npm run lint
 ```
 
@@ -85,7 +85,8 @@ New code goes where it belongs, not in a new top-level folder:
 - The message files are fallbacks only (plus month names). Wrap CMS text as `pick(cmsValue, t("fallback"))` from `@/lib/text`.
 - Photos and video are **Media uploads only** — never hardcode an image URL or `/public` file in a component. Resolve upload fields with `resolveImage` / `resolveVideo` from `@/lib/media` (applies the Media focal point as `object-position`) and render nothing, or an empty tinted frame, when it returns `null`.
 - Localized fields: `localized: true` for anything that differs per language. Keep the locale lists in `payload.config.ts` and `src/i18n/routing.ts` in sync.
-- After changing a collection: run `npm run generate:types` and commit `src/payload-types.ts`. Before deploying a schema change, create a migration (`npm run payload migrate:create`) — production does **not** auto-push the schema; only dev does.
+- **After changing any collection or global** (new field, `localized`, relationship, rename…): run `npm run payload migrate:create <name>` and `npm run generate:types`, and commit `src/migrations/` and `src/payload-types.ts` **with** the change. Servers apply migrations on startup (`prodMigrations`); they never auto-push the schema like the dev server does, so a missing migration means `Failed query` errors in UAT/production. Never hand-write SQL or edit a generated migration.
+- New content globals or fields that should have starting content: add them to `src/seed/content.ts` (and photos to `src/seed/media.ts`), so fresh environments seed themselves on first boot.
 - If a collection config grows large, extract field groups, access rules or hooks into separate files.
 
 ### Functions & validation
@@ -105,8 +106,18 @@ New code goes where it belongs, not in a new top-level folder:
 
 ### Security
 
-- The admin panel and its auth are Payload's (`Users` collection). Collection `access` functions are the security boundary — not `proxy.ts`, which only handles locale routing and can be bypassed (e.g. CVE-2025-29927).
-- Secrets live in `.env` only — never commit or hardcode them. `PAYLOAD_SECRET` must be a long random string.
+- The admin panel and its auth are Payload's (`Users` collection). Collection `access` functions are the security boundary — not `proxy.ts`, which only handles locale routing and the noindex header, and can be bypassed (e.g. CVE-2025-29927).
+- Secrets live in `.env` only — never commit or hardcode them. `PAYLOAD_SECRET` must be a long random string, different per environment.
+
+### Deployment & environments
+
+Full guide and one-time setup: [docs/phase-8-docker.md](./docs/phase-8-docker.md).
+
+- **One image, two environments.** CI builds once; the same image runs on UAT and is promoted to production by SHA. So nothing environment-specific may be baked in at build time: read `SITE_ENV`, `NEXT_PUBLIC_SITE_URL` and `S3_*` at runtime only.
+- **Site URL and indexing:** always go through `src/lib/seo.ts` (`getSeoConfig()` in pages/metadata/route handlers, `readSeoConfig()` in `proxy.ts`) — never `process.env` directly. Indexing is fail-closed: only the literal `SITE_ENV=production` allows it, and `docker-compose.prod.yml` hardcodes it.
+- **Each environment has its own R2 bucket and database** — never point UAT at production's.
+- **Image hosts** in `next.config.ts` are fixed at build time: only `*.r2.dev` is allowed; a custom media domain must be added there.
+- Compose file changes are not deployed by CI — they must be copied to both server directories.
 
 ### Tools
 

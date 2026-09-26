@@ -1,0 +1,26 @@
+# Production overlay — apply on top of the base file:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --wait
+#
+# Two things differ from UAT:
+#
+#  1. SITE_ENV is hardcoded here rather than read from .env. Indexing is
+#     fail-closed (see src/lib/seo.ts), so production must assert it explicitly —
+#     but it must not depend on someone remembering to set a variable, since a
+#     missing value would silently deindex the live site.
+#
+#  2. The image is pinned to an explicit tag instead of tracking :latest.
+#     CI tags every main build with its short commit SHA, so promotion is:
+#     verify the SHA on UAT, then set APP_IMAGE_TAG to that SHA here.
+#     The "Promote to Production" workflow writes it into this stack's .env.
+#
+# The project name is pinned so the production containers and Postgres volume
+# (melissokomiakritis_postgres_data) keep their identity regardless of what the
+# directory is called.
+name: melissokomiakritis
+
+services:
+  app:
+    image: ghcr.io/trixas97/melissokomiakritis:${APP_IMAGE_TAG:?set APP_IMAGE_TAG to the commit SHA being promoted}
+    environment:
+      SITE_ENV: production

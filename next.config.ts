@@ -2,19 +2,15 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 import { withPayload } from "@payloadcms/next/withPayload";
 
-// Uploaded media is served from R2 in production. The image allow-list is fixed
-// at build time, so the Docker build receives S3_PUBLIC_URL as a build arg.
-const mediaHost = process.env.S3_PUBLIC_URL ? [new URL(`${process.env.S3_PUBLIC_URL}/**`)] : [];
-
+// Uploaded media is served from each environment's R2 bucket. The image
+// allow-list is fixed at build time, but one image is promoted from UAT to
+// production (different buckets), so allow every r2.dev public bucket URL.
+// If a bucket gets a custom domain, add that host here.
 const nextConfig: NextConfig = {
   // Required by the Dockerfile, which copies .next/standalone
   output: "standalone",
   images: {
-    remotePatterns: [
-      { protocol: "https", hostname: "images.pexels.com" },
-      { protocol: "https", hostname: "images.unsplash.com" },
-      ...mediaHost,
-    ],
+    remotePatterns: [{ protocol: "https", hostname: "*.r2.dev" }],
   },
 };
 

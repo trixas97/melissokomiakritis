@@ -6,6 +6,7 @@ import { routing } from "@/i18n/routing";
 import { getSiteSettings } from "@/lib/content";
 import { resolveImage } from "@/lib/media";
 import { pick } from "@/lib/text";
+import { getSeoConfig } from "@/lib/seo";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import "../globals.css";
@@ -38,10 +39,16 @@ type Props = {
 export async function generateMetadata({ params }: Omit<Props, "children">): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
-  const { seo } = await getSiteSettings(locale as Locale);
+  const [{ seo }, { indexable, siteUrl }] = await Promise.all([
+    getSiteSettings(locale as Locale),
+    getSeoConfig(),
+  ]);
   return {
+    metadataBase: new URL(siteUrl),
     title: pick(seo?.title, DEFAULT_TITLE),
     description: pick(seo?.description, DEFAULT_DESCRIPTION),
+    // Fail-closed: only SITE_ENV=production is indexable (UAT and local are not)
+    ...(indexable ? {} : { robots: { index: false, follow: false } }),
   };
 }
 

@@ -51,7 +51,7 @@ Replacing the existing brochure site at melissokomiakritis.gr with a modern bili
 - [x] 10. Admin login — Payload auth (`Users` collection)
 - [x] 11. Admin orders list + status — Payload admin (`Orders` collection)
 - [x] 12. Admin product editor + price toggle — Payload admin (`Products` collection)
-- [ ] 13. Dockerfile + docker-compose (app + Postgres) + nginx.conf — updated for Payload, not yet run
-- [ ] 14. Create the initial Payload migration and wire `prodMigrations`
-- [ ] 15. Test full flow locally with Docker
-- [ ] 16. Deploy to Hetzner + point DNS
+- [x] 13. Dockerfile, compose (base + UAT/prod overlays), CI workflows — same pattern as labo/gtrichakis; see docs/phase-8-docker.md
+- [x] 14. Initial Payload migration + `prodMigrations` on startup + first-boot seeding
+- [ ] 15. Test full flow locally with Docker — image + fresh-database boot verified; order flow still to build
+- [ ] 16. One-time server setup + first deploy (docs/phase-8-docker.md §One-time setup) + point DNS
