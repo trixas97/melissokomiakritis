@@ -13,6 +13,8 @@ import { AboutPage } from "./globals/AboutPage";
 import { HomePage } from "./globals/HomePage";
 import { SiteSettings } from "./globals/SiteSettings";
 import { Labels } from "./globals/Labels";
+import { migrations } from "./migrations";
+import { seedOnFirstBoot } from "./seed/firstBoot";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -28,13 +30,19 @@ export default buildConfig({
   collections: [Products, Orders, Media, Users],
   globals: [HomePage, AboutPage, Availability, SiteSettings, Labels],
 
-  // PostgreSQL via Drizzle. Schema is auto-pushed in dev only; production
-  // needs migrations (`npm run payload migrate:create` / `migrate`).
+  // PostgreSQL via Drizzle. In dev the schema is auto-pushed; in production
+  // (NODE_ENV=production) the migrations in src/migrations run on startup,
+  // before the app serves requests. Create one after every schema change:
+  // `npm run payload migrate:create <name>`.
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL,
     },
+    prodMigrations: migrations,
   }),
+
+  // A brand-new server database seeds itself (see src/seed/firstBoot.ts)
+  onInit: seedOnFirstBoot,
 
   plugins: [
     // Cloudflare R2 (S3-compatible). Disabled when S3_BUCKET is unset, so local

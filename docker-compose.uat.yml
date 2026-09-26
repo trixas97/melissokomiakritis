@@ -1,0 +1,33 @@
+# UAT overlay — apply on top of the base file:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.uat.yml up -d --wait
+#
+# One thing differs from production: smaller memory limits, since this box also
+# runs the labo and gtrichakis stacks and Nginx Proxy Manager.
+#
+# The project name is pinned: the stack lives in
+# /home/trixas/melissokomiakritis/uat, and a directory-derived name would be the
+# generic "uat". It must stay distinct from production's pinned
+# "melissokomiakritis" — the name also prefixes the Postgres volume, so the two
+# environments can never share a database.
+#
+# Two things deliberately NOT set here:
+#
+#  - SITE_ENV. The base file defaults it to "uat", which keeps this environment
+#    out of the search index. Setting it to "production" here would be a bug.
+#  - The image tag. UAT tracks :latest from the base file, so every merge to
+#    main lands here. Production pins a SHA in docker-compose.prod.yml.
+#
+# The host port comes from APP_PORT in the stack's .env (3005 for UAT), not from
+# here — see the note on `ports` in docker-compose.yml.
+
+name: melissokomiakritis-uat
+
+services:
+  app:
+    mem_limit: 512m
+    memswap_limit: 512m
+
+  postgres:
+    mem_limit: 192m
+    memswap_limit: 192m

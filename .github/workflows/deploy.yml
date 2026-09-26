@@ -1,0 +1,93 @@
+# Build every main commit and deploy it to UAT.
+#
+# Production is NOT touched by this workflow. Promotion is a deliberate act —
+# see .github/workflows/promote.yml, which pins production to a commit SHA you
+# have already verified on UAT.
+#
+# Triggers:
+#   - Automatic: on push/merge to main
+#   - Manual: "Run workflow" button in GitHub Actions tab
+#
+# Required GitHub Secrets:
+#   DEPLOY_HOST        - Hetzner server IP or hostname
+#   DEPLOY_USER        - SSH user on the server (e.g. trixas)
+#   DEPLOY_SSH_KEY     - Private SSH key for authentication
+#   UAT_DEPLOY_PATH    - UAT stack directory (e.g. /home/trixas/melissokomiakritis/uat)
+
+name: Deploy to UAT
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push:
+    name: Build & Push Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest
+            type=sha,prefix=
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  deploy-uat:
+    name: Deploy to UAT
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        env:
+          UAT_PATH: ${{ secrets.UAT_DEPLOY_PATH }}
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          envs: UAT_PATH
+          script: |
+            set -euo pipefail
+            cd "$UAT_PATH"
+            docker compose -f docker-compose.yml -f docker-compose.uat.yml pull
+            docker compose -f docker-compose.yml -f docker-compose.uat.yml up -d --wait
+            docker image prune -f
+
+      - name: Report promotable tag
+        run: |
+          # metadata-action's `type=sha,prefix=` emits the 7-char short SHA,
+          # so that — not the full commit SHA — is the tag to promote.
+          SHORT_SHA="${GITHUB_SHA::7}"
+          echo "UAT now runs \`${SHORT_SHA}\`." >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "To promote once verified: **Actions → Promote to Production → image_tag = \`${SHORT_SHA}\`**" >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,11 @@
+# LOCAL DEVELOPMENT ONLY. Compose loads this file automatically when no -f flag
+# is given (`docker compose up -d postgres`); the server always passes -f with an
+# overlay, so it never applies there.
+#
+# Publishes Postgres on localhost for `npm run dev`. POSTGRES_PORT comes from
+# your .env (5433 on a machine that already runs a native Postgres on 5432).
+
+services:
+  postgres:
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"

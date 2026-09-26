@@ -1,0 +1,75 @@
+# Promote an already-built image to PRODUCTION.
+#
+# Nothing is built here. The image being promoted is the exact artifact that has
+# been running on UAT, identified by the short commit SHA that "Deploy to
+# UAT" prints in its run summary. Production therefore never moves as a side
+# effect of a merge — only when someone runs this workflow.
+#
+# Required GitHub Secrets:
+#   DEPLOY_HOST        - Hetzner server IP or hostname
+#   DEPLOY_USER        - SSH user on the server (e.g. trixas)
+#   DEPLOY_SSH_KEY     - Private SSH key for authentication
+#   DEPLOY_PATH        - Production stack directory (e.g. /home/trixas/melissokomiakritis/prod)
+
+name: Promote to Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Image tag to promote — the 7-char short SHA shown in the UAT run summary'
+        required: true
+        type: string
+
+jobs:
+  promote:
+    name: Promote to Production
+    runs-on: ubuntu-latest
+    # Add a required reviewer to this environment in repo Settings to gate
+    # production behind an approval.
+    environment: production
+
+    steps:
+      - name: Validate tag format
+        env:
+          IMAGE_TAG: ${{ inputs.image_tag }}
+        run: |
+          set -euo pipefail
+          # Rejects anything that is not a plain hex SHA, so the value cannot
+          # carry shell metacharacters into the deploy step below.
+          if ! printf '%s' "$IMAGE_TAG" | grep -Eq '^[0-9a-f]{7,40}$'; then
+            echo "::error::'$IMAGE_TAG' is not a valid image tag (expected 7-40 hex chars)."
+            exit 1
+          fi
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        env:
+          PROD_PATH: ${{ secrets.DEPLOY_PATH }}
+          IMAGE_TAG: ${{ inputs.image_tag }}
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          envs: PROD_PATH,IMAGE_TAG
+          script: |
+            set -euo pipefail
+            cd "$PROD_PATH"
+
+            # Persist the pin in .env so later manual `docker compose` calls in
+            # this directory resolve the same image instead of failing the
+            # APP_IMAGE_TAG guard in docker-compose.prod.yml.
+            umask 077
+            grep -v '^APP_IMAGE_TAG=' .env > .env.next || true
+            echo "APP_IMAGE_TAG=${IMAGE_TAG}" >> .env.next
+            mv .env.next .env
+
+            COMPOSE="docker compose -f docker-compose.yml -f docker-compose.prod.yml"
+            $COMPOSE pull
+            $COMPOSE up -d --wait
+            docker image prune -f
+
+      - name: Record what shipped
+        env:
+          IMAGE_TAG: ${{ inputs.image_tag }}
+        run: echo "Production now runs \`${IMAGE_TAG}\`." >> "$GITHUB_STEP_SUMMARY"

@@ -11,15 +11,15 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
-# Payload needs these at build time for page data collection.
-# Dummy values are fine — real secrets are injected at runtime.
+# Payload needs these at build time to load its config. Dummy values are fine —
+# nothing connects to the database during the build (every page renders per
+# request), and the real secrets are injected at runtime.
+# No other build-time env: SITE_ENV, NEXT_PUBLIC_SITE_URL and the S3_* values
+# are read at runtime, so this one image is promoted from UAT to production.
 ARG PAYLOAD_SECRET=build-time-secret-placeholder
 ARG DATABASE_URL=postgres://placeholder:placeholder@localhost:5432/placeholder
 ENV PAYLOAD_SECRET=${PAYLOAD_SECRET}
 ENV DATABASE_URL=${DATABASE_URL}
-# Public media URL (R2) — baked into next/image's allowed hosts at build time
-ARG S3_PUBLIC_URL=
-ENV S3_PUBLIC_URL=${S3_PUBLIC_URL}
 RUN npm run build
 
 # Stage 3: Production runner
@@ -33,9 +33,15 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+# public/ holds the logo and hero video that first-boot seeding uploads to R2
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# Next's output tracing copies sharp's JS but not libvips' native .so files
+# (sharp >= 0.34), so image processing would fail with "Could not load the
+# sharp module". Copy sharp's complete Alpine packages over the traced ones.
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@img ./node_modules/@img
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/sharp ./node_modules/sharp
 USER nextjs
 
 EXPOSE 3000
