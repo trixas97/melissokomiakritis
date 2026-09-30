@@ -11,6 +11,7 @@
   --color-brand-blue: #4A90C4;
   --color-brand-blue-dark: #3A7AAE;
   --color-brand-light: #E8F4FD;
+  --color-brand-sky: #B9D8F0; /* light-theme navbar */
 
   /* Theme colours — switch with the light/dark toggle (values below) */
   --color-canvas: var(--theme-canvas); /* page background */

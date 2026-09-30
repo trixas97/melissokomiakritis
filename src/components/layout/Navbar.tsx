@@ -40,8 +40,8 @@ export default function Navbar({ siteName, logo, logoLight }: Props) {
     <header
       className={`sticky top-0 z-50 transition-all duration-500 ${
         scrolled
-          ? 'bg-shade/55 light:bg-brand-light/60 light:border-brand-blue/20 backdrop-blur-xl light:backdrop-saturate-150 border-b border-ink/[0.08] shadow-xl shadow-shadow/30'
-          : 'bg-shade/15 light:bg-brand-light/75 light:border-brand-blue/15 backdrop-blur-md border-b border-ink/[0.06]'
+          ? 'bg-shade/55 light:bg-brand-sky/65 light:border-brand-blue/30 backdrop-blur-xl light:backdrop-saturate-150 border-b border-ink/[0.08] shadow-xl shadow-shadow/30'
+          : 'bg-shade/15 light:bg-brand-sky/85 light:border-brand-blue/25 backdrop-blur-md border-b border-ink/[0.06]'
       }`}
     >
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -108,7 +108,7 @@ export default function Navbar({ siteName, logo, logoLight }: Props) {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="xl:hidden -mx-4 px-4 pb-4 pt-2 space-y-0.5 border-t border-ink/[0.06] bg-shade/40 light:bg-brand-light/95 backdrop-blur-xl">
+          <div className="xl:hidden -mx-4 px-4 pb-4 pt-2 space-y-0.5 border-t border-ink/[0.06] bg-shade/40 light:bg-brand-sky/95 backdrop-blur-xl">
             {navLinks.map((link) => (
               <Link
                 key={link.href}

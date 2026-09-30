@@ -18,6 +18,7 @@ Defined in `src/app/globals.css` via `@theme inline`:
 | `brand-warm-gray`   | `#6B7B7F` | Muted text (light contexts)      |
 | `brand-blue`        | `#4A90C4` | Secondary (admin, links)         |
 | `brand-blue-dark`   | `#3A7AAE` | Blue hover                       |
+| `brand-sky`         | `#B9D8F0` | Light-theme navbar               |
 
 ## Typography
 
