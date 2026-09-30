@@ -12,7 +12,12 @@ export const SiteSettings: GlobalConfig = {
   },
   fields: [
     { name: "siteName", label: "Business name", type: "text", admin: { description: "Used in the copyright line and as the logo's text fallback." } },
-    mediaUpload("logo", "Logo", "Shown in the navbar and the footer."),
+    mediaUpload("logo", "Logo", "Shown in the navbar and the footer (dark theme). Light lettering works best."),
+    mediaUpload(
+      "logoLight",
+      "Logo for the light theme",
+      "The same logo with dark lettering, for the light theme. Leave empty to use the logo above.",
+    ),
     group("seo", "Search engines", [
       localizedText("title", "Page title (browser tab and Google)"),
       localizedTextarea("description", "Description (shown under the title in Google)"),

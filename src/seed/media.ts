@@ -32,6 +32,13 @@ const ASSETS: Asset[] = [
     filename: "logo.png",
     alt: { el: "Μελισσοκομία Κρήτης", en: "Μελισσοκομία Κρήτης" },
   },
+  {
+    global: "site-settings",
+    field: "logoLight",
+    source: "/logo-light.png",
+    filename: "logo-light.png",
+    alt: { el: "Μελισσοκομία Κρήτης", en: "Μελισσοκομία Κρήτης" },
+  },
   // Home page
   {
     global: "home-page",

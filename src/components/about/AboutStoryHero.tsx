@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { ImageSource } from "@/lib/media";
+import SectionFade from "@/components/shared/SectionFade";
 
 type Props = {
   title: string;
@@ -38,9 +39,11 @@ export default function AboutStoryHero({ title, description, image, discoverLabe
         aria-hidden="true"
       />
 
+      <SectionFade edge="bottom" className="h-32" />
+
       <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
         <h1
-          className="max-w-4xl font-display text-5xl md:text-7xl font-bold tracking-tight text-white"
+          className="max-w-4xl text-5xl md:text-7xl font-bold tracking-tight text-white"
           style={{ textShadow: "0 2px 24px rgba(0,0,0,0.45)" }}
         >
           {title}

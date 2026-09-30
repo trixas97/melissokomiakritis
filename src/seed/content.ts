@@ -7,6 +7,8 @@ import el from "../messages/el.json";
 import en from "../messages/en.json";
 import { LABEL_KEYS } from "../globals/Labels";
 
+const ABOUT_VIDEO_URL = "https://www.youtube.com/watch?v=4xrMltwE6YI";
+
 type Messages = Record<string, Record<string, string>>;
 const messages: Record<"el" | "en", Messages> = { el, en } as unknown as Record<"el" | "en", Messages>;
 
@@ -166,6 +168,15 @@ export async function seedContent(payload: Payload) {
       await payload.updateGlobal({ slug: "about-page", locale, data: { story: storyCopy[locale] } });
     }
     payload.logger.info("Seeded About page story");
+  }
+
+  // The client's YouTube video, under the fallback heading from the message files
+  if (!aboutPage.video?.youtubeUrl) {
+    for (const locale of ["el", "en"] as const) {
+      const video = { title: messages[locale].about.video_title, youtubeUrl: ABOUT_VIDEO_URL };
+      await payload.updateGlobal({ slug: "about-page", locale, data: { video } });
+    }
+    payload.logger.info("Seeded About page video");
   }
 
   // Home page — the texts the site showed before they moved into Payload.

@@ -7,7 +7,7 @@ import { isLoggedIn } from "../collections/access";
 // in client components — shows the admin's wording. The JSON files remain the
 // fallback for anything left empty.
 export const LABEL_KEYS = {
-  nav: ["home", "about", "queens", "cells", "nucs", "faqs", "gallery", "contact"],
+  nav: ["home", "about", "queens", "cells", "nucs", "faqs", "gallery", "contact", "theme_light"],
   footer: ["quick_links", "contact_heading", "rights"],
   shop: ["title", "shipping_notice", "price_hidden", "order_button"],
   order_form: ["name", "email", "phone", "quantity", "notes", "submit", "success", "error"],

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Source_Sans_3 } from "next/font/google";
+import { Source_Sans_3 } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
@@ -7,15 +7,10 @@ import { getSiteSettings } from "@/lib/content";
 import { resolveImage } from "@/lib/media";
 import { pick } from "@/lib/text";
 import { getSeoConfig } from "@/lib/seo";
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import "../globals.css";
-
-const playfair = Playfair_Display({
-  variable: "--font-display",
-  subsets: ["latin", "latin-ext"],
-  display: "swap",
-});
 
 const sourceSans = Source_Sans_3({
   variable: "--font-body",
@@ -61,17 +56,23 @@ export default async function LocaleLayout({ children, params }: Props) {
   const settings = await getSiteSettings(locale as Locale);
   const siteName = pick(settings.siteName, DEFAULT_NAME);
   const logo = resolveImage(settings.logo);
+  const logoLight = resolveImage(settings.logoLight);
   const footer = settings.footer;
 
+  // data-theme is set before paint by THEME_INIT_SCRIPT, so <html> differs from the server HTML
   return (
-    <html lang={locale} className={`${playfair.variable} ${sourceSans.variable}`}>
+    <html lang={locale} className={sourceSans.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body className="min-h-screen flex flex-col">
         <NextIntlClientProvider>
-          <Navbar siteName={siteName} logo={logo} />
+          <Navbar siteName={siteName} logo={logo} logoLight={logoLight} />
           <main className="flex-1">{children}</main>
           <Footer
             siteName={siteName}
             logo={logo}
+            logoLight={logoLight}
             tagline={footer?.tagline}
             address={footer?.address}
             email={footer?.email}

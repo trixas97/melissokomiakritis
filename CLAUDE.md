@@ -74,6 +74,7 @@ New code goes where it belongs, not in a new top-level folder:
 - No hardcoded user-facing text — every UI string goes through next-intl and must exist in **both** `el.json` and `en.json`.
 - Use `Link`/navigation from `@/i18n/navigation`, not `next/link`, for localized routes.
 - Style with Tailwind using the design tokens from [docs/phase-6-design.md](./docs/phase-6-design.md).
+- The site has a light and a dark theme (`<html data-theme>`, toggle in the navbar). Use the theme colours from `globals.css` — `text-fg`/`fg-soft`/`fg-muted`/`fg-faint`, `text-accent`, `ink` for lines and tints, `shade`/`shadow` for backdrops — not `text-white`/`bg-black`, except over photos and video, which stay white-on-dark in both themes. New section backgrounds need a `[data-theme="light"]` variant; one-off light tweaks use the `light:` variant.
 
 ### Data & Payload
 

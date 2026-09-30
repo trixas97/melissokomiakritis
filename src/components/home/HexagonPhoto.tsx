@@ -35,7 +35,7 @@ export default function HexagonPhoto({ image }: Props) {
       </svg>
 
       <div
-        className="absolute inset-0 bg-white/[0.04]"
+        className="absolute inset-0 bg-ink/[0.04]"
         style={{
           maskImage: HEXAGON_MASK,
           WebkitMaskImage: HEXAGON_MASK,

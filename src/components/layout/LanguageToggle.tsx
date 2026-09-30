@@ -16,12 +16,12 @@ export default function LanguageToggle() {
   return (
     <button
       onClick={switchLocale}
-      className="flex items-center gap-1 rounded-full border border-white/20 px-2.5 py-1 text-xs font-semibold tracking-wide transition-all duration-200 hover:border-brand-amber/50 hover:bg-white/[0.08]"
+      className="flex items-center gap-1 rounded-full border border-ink/20 px-2.5 py-1 text-xs font-semibold tracking-wide transition-all duration-200 hover:border-brand-amber/50 hover:bg-ink/[0.08]"
       aria-label={`Switch to ${locale === "el" ? "English" : "Greek"}`}
     >
-      <span className={locale === "el" ? "text-white" : "text-white/35"}>EL</span>
-      <span className="text-white/20">|</span>
-      <span className={locale === "en" ? "text-white" : "text-white/35"}>EN</span>
+      <span className={locale === "el" ? "text-fg" : "text-fg-faint"}>EL</span>
+      <span className="text-fg-faint">|</span>
+      <span className={locale === "en" ? "text-fg" : "text-fg-faint"}>EN</span>
     </button>
   );
 }

@@ -7,7 +7,8 @@
     "nucs": "Bee Nucs",
     "faqs": "FAQs",
     "gallery": "Gallery",
-    "contact": "Contact"
+    "contact": "Contact",
+    "theme_light": "Light theme"
   },
   "home": {
     "hero_title": "Pure Cretan Queen Bees",
@@ -50,6 +51,7 @@
   "faqs": { "title": "Frequently Asked Questions" },
   "about": {
     "story_title": "Our Story",
+    "video_title": "See Us at Work",
     "discover": "Discover"
   },
   "contact": { "title": "Contact" },

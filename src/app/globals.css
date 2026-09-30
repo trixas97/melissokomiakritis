@@ -12,15 +12,61 @@
   --color-brand-blue-dark: #3A7AAE;
   --color-brand-light: #E8F4FD;
 
+  /* Theme colours — switch with the light/dark toggle (values below) */
+  --color-canvas: var(--theme-canvas); /* page background */
+  --color-fg: var(--theme-fg); /* headings, strong text */
+  --color-fg-soft: var(--theme-fg-soft); /* body text */
+  --color-fg-muted: var(--theme-fg-muted); /* secondary text */
+  --color-fg-faint: var(--theme-fg-faint); /* small print, separators */
+  --color-accent: var(--theme-accent); /* amber text and links */
+  --color-ink: var(--theme-ink); /* hairlines, tints and decorative cells — use with an opacity */
+  --color-shade: var(--theme-shade); /* navbar/overlay backdrop — use with an opacity */
+  --color-shadow: var(--theme-shadow); /* drop shadows — use with an opacity */
+
   /* Typography */
-  --font-display: "Playfair Display", serif;
   --font-body: "Source Sans 3", sans-serif;
+}
+
+/* `light:` styles apply only in the light theme, e.g. light:bg-shade/90 */
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+
+/* Dark theme (default, and when JavaScript is off). Photos and the hero video
+   keep plain white text in both themes. */
+:root {
+  color-scheme: dark;
+  --theme-canvas: #1a3a4a;
+  --theme-fg: #ffffff;
+  --theme-fg-soft: rgb(255 255 255 / 0.65);
+  --theme-fg-muted: rgb(255 255 255 / 0.42);
+  --theme-fg-faint: rgb(255 255 255 / 0.28);
+  --theme-accent: #f5a623;
+  --theme-ink: #ffffff;
+  --theme-shade: #000000;
+  --theme-shadow: #000000;
+  --edge-seam: #07080a; /* SectionFade: sections fade to this where they meet */
+  --edge-footer: #060e04; /* top of .photo-footer */
+}
+
+/* Light theme — clean white and light grey, charcoal text, amber accents */
+[data-theme="light"] {
+  color-scheme: light;
+  --theme-canvas: #f5f6f7;
+  --theme-fg: #1c1f24;
+  --theme-fg-soft: #3d434b;
+  --theme-fg-muted: #5b626c;
+  --theme-fg-faint: #7a818b;
+  --theme-accent: #9a5b00;
+  --theme-ink: #1f2937;
+  --theme-shade: #ffffff;
+  --theme-shadow: rgb(15 23 42 / 0.28);
+  --edge-seam: #f5f6f7;
+  --edge-footer: #eceef1;
 }
 
 /* Base */
 body {
-  background-color: var(--color-brand-dark);
-  color: var(--color-brand-cream);
+  background-color: var(--color-canvas);
+  color: var(--color-fg);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -70,12 +116,48 @@ html {
     linear-gradient(150deg, #0a1406 0%, #16280c 28%, #1d3210 52%, #102008 78%, #070d04 100%);
 }
 
-/* ── Dark glass card — matches code.html .glass-dark ── */
-.glass-dark {
+/* Footer: dark olive night, the page's closing band */
+.photo-footer {
+  background: linear-gradient(160deg, #060e04 0%, #0c1a07 30%, #0a0e0a 60%, #040804 100%);
+}
+
+/* Light theme: near-white sections, each with a faint glow of its colour — amber, sky, olive */
+[data-theme="light"] .photo-amber {
+  background:
+    radial-gradient(ellipse 55% 45% at 85% 15%, rgba(245, 166, 35, 0.12) 0%, transparent 58%),
+    radial-gradient(ellipse 60% 50% at 15% 85%, rgba(245, 166, 35, 0.08) 0%, transparent 55%),
+    linear-gradient(148deg, #f7f7f8 0%, #f2f3f5 50%, #f7f7f8 100%);
+}
+
+[data-theme="light"] .photo-forest {
+  background:
+    radial-gradient(ellipse 65% 50% at 20% 15%, rgba(74, 144, 196, 0.16) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 55% at 80% 85%, rgba(58, 122, 174, 0.12) 0%, transparent 58%),
+    linear-gradient(145deg, #f2f7fb 0%, #eaf1f7 50%, #f3f7fa 100%);
+}
+
+[data-theme="light"] .photo-olive {
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 18%, rgba(150, 180, 60, 0.16) 0%, transparent 58%),
+    radial-gradient(ellipse 65% 55% at 15% 85%, rgba(90, 130, 40, 0.12) 0%, transparent 55%),
+    linear-gradient(150deg, #f5f7f2 0%, #eef1ea 50%, #f6f7f3 100%);
+}
+
+[data-theme="light"] .photo-footer {
+  background: linear-gradient(160deg, #eceef1 0%, #e6e9ed 50%, #eceef1 100%);
+}
+
+/* ── Glass card (home "What we offer") ── */
+.glass-card {
   background: rgba(18, 14, 8, 0.72);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+[data-theme="light"] .glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(15, 23, 42, 0.08);
 }
 
 /* ── Film grain / noise texture overlay ── */

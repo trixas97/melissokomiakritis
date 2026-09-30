@@ -581,6 +581,17 @@ export interface AboutPage {
      */
     image?: (number | null) | Media;
   };
+  video?: {
+    title?: string | null;
+    /**
+     * Optional. Leave a blank line between paragraphs.
+     */
+    description?: string | null;
+    /**
+     * Paste the video's YouTube link, e.g. https://www.youtube.com/watch?v=… Leave empty to hide the section.
+     */
+    youtubeUrl?: string | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -625,9 +636,13 @@ export interface SiteSetting {
    */
   siteName?: string | null;
   /**
-   * Shown in the navbar and the footer.
+   * Shown in the navbar and the footer (dark theme). Light lettering works best.
    */
   logo?: (number | null) | Media;
+  /**
+   * The same logo with dark lettering, for the light theme. Leave empty to use the logo above.
+   */
+  logoLight?: (number | null) | Media;
   seo?: {
     title?: string | null;
     description?: string | null;
@@ -660,6 +675,7 @@ export interface Label {
     faqs?: string | null;
     gallery?: string | null;
     contact?: string | null;
+    theme_light?: string | null;
   };
   footer?: {
     quick_links?: string | null;
@@ -808,6 +824,13 @@ export interface AboutPageSelect<T extends boolean = true> {
         description?: T;
         image?: T;
       };
+  video?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        youtubeUrl?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -846,6 +869,7 @@ export interface AvailabilitySelect<T extends boolean = true> {
 export interface SiteSettingsSelect<T extends boolean = true> {
   siteName?: T;
   logo?: T;
+  logoLight?: T;
   seo?:
     | T
     | {
@@ -881,6 +905,7 @@ export interface LabelsSelect<T extends boolean = true> {
         faqs?: T;
         gallery?: T;
         contact?: T;
+        theme_light?: T;
       };
   footer?:
     | T

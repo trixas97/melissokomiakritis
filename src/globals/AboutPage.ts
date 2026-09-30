@@ -1,5 +1,6 @@
 import type { Field, GlobalConfig } from "payload";
 import { isLoggedIn } from "../collections/access";
+import { parseYouTubeId } from "../lib/youtube";
 
 const aboutSection = (name: string, label: string): Field => ({
   name,
@@ -36,5 +37,29 @@ export const AboutPage: GlobalConfig = {
     aboutSection("beekeeping", "Beekeeping (Μελισσοκομία)"),
     aboutSection("queenRearing", "Queen rearing (Βασιλοτροφία)"),
     aboutSection("nucs", "Nucs (Παραφυάδες)"),
+    {
+      name: "video",
+      label: "Video (Βίντεο) — YouTube video after the topics",
+      type: "group",
+      fields: [
+        { name: "title", type: "text", localized: true },
+        {
+          name: "description",
+          type: "textarea",
+          localized: true,
+          admin: { description: "Optional. Leave a blank line between paragraphs." },
+        },
+        {
+          name: "youtubeUrl",
+          label: "YouTube link",
+          type: "text",
+          admin: {
+            description: "Paste the video's YouTube link, e.g. https://www.youtube.com/watch?v=… Leave empty to hide the section.",
+          },
+          validate: (value: string | null | undefined) =>
+            !value?.trim() || parseYouTubeId(value) !== null || "This isn't a YouTube video link.",
+        },
+      ],
+    },
   ],
 };

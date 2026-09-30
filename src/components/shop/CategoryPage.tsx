@@ -13,8 +13,8 @@ export default function CategoryPage({ titleKey }: Props) {
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="font-display text-3xl font-bold text-white">{nav(titleKey)}</h1>
-      <p className="mt-2 text-white/60">{t("shipping_notice")}</p>
+      <h1 className="text-3xl font-bold text-fg">{nav(titleKey)}</h1>
+      <p className="mt-2 text-fg-soft">{t("shipping_notice")}</p>
     </div>
   );
 }

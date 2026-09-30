@@ -21,7 +21,7 @@ Defined in `src/app/globals.css` via `@theme inline`:
 
 ## Typography
 
-- **Display**: Playfair Display — headings, brand name, section titles (bold, large)
+- **Headings**: no separate font — titles and subtitles use the body font, just bold and large. (Playfair Display was dropped: it has no Greek letters.)
 - **Body**: Source Sans 3 — nav, body text, captions (excellent Greek support)
 
 ## Photographic Gradient Backgrounds

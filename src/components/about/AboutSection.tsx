@@ -1,5 +1,6 @@
 import Image from "next/image";
 import FloatingHexagons, { type HexagonCell } from "@/components/shared/FloatingHexagons";
+import SectionFade from "@/components/shared/SectionFade";
 import type { ImageSource } from "@/lib/media";
 
 type Props = {
@@ -10,12 +11,13 @@ type Props = {
   imageSide: "left" | "right";
   background: string; // photographic gradient class from globals.css, e.g. "photo-amber"
   cells: HexagonCell[];
+  isLast?: boolean; // last section before the footer, so it fades into the footer
 };
 
 // One About page topic: text on one side, photo on the other, over a
 // photographic gradient with floating honeycomb cells. Stacks text-then-photo
 // on small screens.
-export default function AboutSection({ id, title, description, image, imageSide, background, cells }: Props) {
+export default function AboutSection({ id, title, description, image, imageSide, background, cells, isLast = false }: Props) {
   const paragraphs = (description ?? "").split(/\n\s*\n/).filter((p) => p.trim());
   const photoFirst = imageSide === "left";
 
@@ -24,16 +26,18 @@ export default function AboutSection({ id, title, description, image, imageSide,
     <section id={id} className={`relative scroll-mt-20 overflow-hidden py-20 sm:py-28 ${background}`}>
       <div className="noise-layer absolute inset-0 pointer-events-none" aria-hidden="true" />
       <FloatingHexagons cells={cells} />
+      <SectionFade edge="top" />
+      <SectionFade edge="bottom" to={isLast ? "footer" : "seam"} />
 
       <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-20 lg:px-8">
         <div className={photoFirst ? "lg:order-2" : ""}>
           {title && (
-            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-fg">
               {title}
             </h2>
           )}
           <div className="mt-5 h-px w-16 bg-gradient-to-r from-brand-amber/70 to-transparent" />
-          <div className="mt-7 max-w-prose space-y-4 text-base sm:text-lg leading-relaxed text-white/65">
+          <div className="mt-7 max-w-prose space-y-4 text-base sm:text-lg leading-relaxed text-fg-soft">
             {paragraphs.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
@@ -41,7 +45,7 @@ export default function AboutSection({ id, title, description, image, imageSide,
         </div>
 
         <div
-          className={`relative aspect-[4/3] w-full overflow-hidden rounded-[2rem] border border-white/[0.08] bg-white/[0.04] shadow-2xl shadow-black/50 ${
+          className={`relative aspect-[4/3] w-full overflow-hidden rounded-[2rem] border border-ink/[0.08] bg-ink/[0.04] shadow-2xl shadow-shadow/50 ${
             photoFirst ? "lg:order-1" : ""
           }`}
         >

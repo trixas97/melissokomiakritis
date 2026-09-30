@@ -4,6 +4,7 @@ import { getAvailability, getHomePage } from "@/lib/content";
 import { resolveImage, resolveVideo } from "@/lib/media";
 import { pick } from "@/lib/text";
 import FloatingHexagons from "@/components/shared/FloatingHexagons";
+import SectionFade from "@/components/shared/SectionFade";
 import AvailabilityBadge from "@/components/home/AvailabilityBadge";
 import OfferCard from "@/components/home/OfferCard";
 import WhySection from "@/components/home/WhySection";
@@ -84,7 +85,7 @@ export default async function HomePage({ params }: Props) {
           )}
 
           <h1
-            className="font-display text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold text-white leading-[1.0] tracking-tight"
+            className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold text-white leading-[1.0] tracking-tight"
             style={{ textShadow: "0 4px 48px rgba(0,0,0,0.5)" }}
           >
             {pick(hero?.title, t("hero_title"))}
@@ -125,22 +126,18 @@ export default async function HomePage({ params }: Props) {
           </div>
         </div>
 
-        {/* Fade into next section */}
-        <div
-          className="absolute bottom-0 inset-x-0 h-36 pointer-events-none"
-          style={{ background: "linear-gradient(to bottom, transparent, #191000)" }}
-          aria-hidden="true"
-        />
+        <SectionFade edge="bottom" className="h-36" />
       </section>
 
       {/* ════════ PRODUCT CATEGORIES ════════ */}
       {/* scroll-mt clears the sticky navbar when jumping here from the hero */}
       <section id="offer" className="photo-amber relative scroll-mt-20 py-20 sm:py-28">
         <div className="noise-layer absolute inset-0 pointer-events-none" aria-hidden="true" />
+        <SectionFade edge="top" />
 
         <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mb-14 text-center">
-            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-fg">
               {pick(offer?.title, t("categories_title"))}
             </h2>
             <div className="mt-4 mx-auto h-px w-16 bg-gradient-to-r from-transparent via-brand-amber/60 to-transparent" />
@@ -157,18 +154,13 @@ export default async function HomePage({ params }: Props) {
                 image={resolveImage(card?.image)}
                 ctaLabel={pick(offer?.cardCta, t("cat_cta"))}
                 accent={index === 1}
-                badge={<AvailabilityBadge range={availability[key]} accent={index === 1} />}
+                badge={<AvailabilityBadge range={availability[key]} />}
               />
             ))}
           </div>
         </div>
 
-        {/* Fade into forest section */}
-        <div
-          className="absolute bottom-0 inset-x-0 h-28 pointer-events-none"
-          style={{ background: "linear-gradient(to bottom, transparent, #020810)" }}
-          aria-hidden="true"
-        />
+        <SectionFade edge="bottom" />
       </section>
 
       <WhySection title={pick(why?.title, t("trust_title"))} reasons={reasons} />

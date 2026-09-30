@@ -6,6 +6,7 @@ import Logo from "./Logo";
 type Props = {
   siteName: string;
   logo: ImageSource | null;
+  logoLight?: ImageSource | null;
   tagline?: string | null;
   address?: string | null;
   email?: string | null;
@@ -15,7 +16,7 @@ type Props = {
 
 // Content comes from /admin → Site settings (passed in by the locale layout);
 // headings and link labels from /admin → Labels.
-export default function Footer({ siteName, logo, tagline, address, email, phone, domain }: Props) {
+export default function Footer({ siteName, logo, logoLight, tagline, address, email, phone, domain }: Props) {
   const t = useTranslations("footer");
   const nav = useTranslations("nav");
 
@@ -30,13 +31,7 @@ export default function Footer({ siteName, logo, tagline, address, email, phone,
   ];
 
   return (
-    <footer
-      className="relative overflow-hidden"
-      style={{
-        background:
-          "linear-gradient(160deg, #060e04 0%, #0c1a07 30%, #0a0e0a 60%, #040804 100%)",
-      }}
-    >
+    <footer className="photo-footer relative overflow-hidden">
       {/* Noise grain */}
       <div className="noise-layer absolute inset-0 pointer-events-none" aria-hidden="true" />
 
@@ -53,15 +48,15 @@ export default function Footer({ siteName, logo, tagline, address, email, phone,
         {/* Logo, centred above the columns */}
         <div className="flex flex-col items-center text-center">
           <Link href="/" className="transition-opacity duration-300 hover:opacity-80">
-            <Logo logo={logo} siteName={siteName} className="h-20 w-auto" />
+            <Logo logo={logo} logoLight={logoLight} siteName={siteName} className="h-20 w-auto" />
           </Link>
-          <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/35">{tagline}</p>
+          <p className="mt-4 max-w-sm text-sm leading-relaxed text-fg-muted">{tagline}</p>
         </div>
 
         <div className="mx-auto mt-12 grid max-w-2xl grid-cols-1 gap-10 text-center sm:grid-cols-2">
           {/* Quick links */}
           <div>
-            <h3 className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-brand-amber/70 mb-4">
+            <h3 className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-accent/80 mb-4">
               {t("quick_links")}
             </h3>
             {/* Two columns filled top to bottom: 4 links, then the rest */}
@@ -70,7 +65,7 @@ export default function Footer({ siteName, logo, tagline, address, email, phone,
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-white/40 transition-colors duration-200 hover:text-brand-amber"
+                    className="text-sm text-fg-muted transition-colors duration-200 hover:text-accent"
                   >
                     {link.label}
                   </Link>
@@ -81,10 +76,10 @@ export default function Footer({ siteName, logo, tagline, address, email, phone,
 
           {/* Contact */}
           <div>
-            <h3 className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-brand-amber/70 mb-4">
+            <h3 className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-accent/80 mb-4">
               {t("contact_heading")}
             </h3>
-            <ul className="space-y-2.5 text-sm text-white/40">
+            <ul className="space-y-2.5 text-sm text-fg-muted">
               {address && <li>{address}</li>}
               {email && <li>{email}</li>}
               {phone && <li>{phone}</li>}
@@ -93,11 +88,11 @@ export default function Footer({ siteName, logo, tagline, address, email, phone,
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 pt-6 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-xs text-white/25">
+        <div className="mt-12 pt-6 border-t border-ink/[0.07] flex flex-col sm:flex-row items-center justify-between gap-2">
+          <p className="text-xs text-fg-faint">
             &copy; {new Date().getFullYear()} {siteName}. {t("rights")}
           </p>
-          {domain && <p className="text-xs text-white/20 tracking-wide">{domain}</p>}
+          {domain && <p className="text-xs text-fg-faint tracking-wide">{domain}</p>}
         </div>
       </div>
     </footer>

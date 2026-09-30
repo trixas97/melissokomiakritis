@@ -3,7 +3,9 @@ import { routing } from "@/i18n/routing";
 import { getAboutPage } from "@/lib/content";
 import { resolveImage } from "@/lib/media";
 import { pick } from "@/lib/text";
+import { parseYouTubeId } from "@/lib/youtube";
 import AboutSection from "@/components/about/AboutSection";
+import AboutVideo from "@/components/about/AboutVideo";
 import AboutStoryHero from "@/components/about/AboutStoryHero";
 
 type Props = {
@@ -20,9 +22,9 @@ const SECTIONS = [
     background: "photo-amber",
     cells: [
       { className: "-top-16 -left-12 w-72 text-brand-amber opacity-[0.05]" },
-      { className: "-bottom-12 right-[6%] w-40 text-white opacity-[0.04]" },
+      { className: "-bottom-12 right-[6%] w-40 text-ink opacity-[0.04]" },
       { className: "top-[22%] left-[46%] w-10 text-brand-amber opacity-[0.08]" },
-      { className: "bottom-[14%] left-[8%] w-8 text-white opacity-[0.06]" },
+      { className: "bottom-[14%] left-[8%] w-8 text-ink opacity-[0.06]" },
     ],
   },
   {
@@ -31,8 +33,8 @@ const SECTIONS = [
     background: "photo-forest",
     cells: [
       { className: "-top-14 -right-10 w-72 text-brand-amber opacity-[0.05]" },
-      { className: "-bottom-14 left-[4%] w-44 text-white opacity-[0.04]" },
-      { className: "top-[18%] right-[44%] w-9 text-white opacity-[0.06]" },
+      { className: "-bottom-14 left-[4%] w-44 text-ink opacity-[0.04]" },
+      { className: "top-[18%] right-[44%] w-9 text-ink opacity-[0.06]" },
       { className: "bottom-[16%] right-[10%] w-12 text-brand-amber opacity-[0.08]" },
     ],
   },
@@ -42,9 +44,9 @@ const SECTIONS = [
     background: "photo-olive",
     cells: [
       { className: "-bottom-16 -left-10 w-64 text-brand-amber opacity-[0.05]" },
-      { className: "-top-10 right-[10%] w-36 text-white opacity-[0.04]" },
+      { className: "-top-10 right-[10%] w-36 text-ink opacity-[0.04]" },
       { className: "top-[16%] left-[10%] w-12 text-brand-amber opacity-[0.08]" },
-      { className: "bottom-[20%] left-[47%] w-8 text-white opacity-[0.06]" },
+      { className: "bottom-[20%] left-[47%] w-8 text-ink opacity-[0.06]" },
     ],
   },
 ] as const;
@@ -53,6 +55,7 @@ export default async function AboutPage({ params }: Props) {
   const { locale } = await params;
   const t = await getTranslations("about");
   const content = await getAboutPage(locale as (typeof routing.locales)[number]);
+  const videoId = parseYouTubeId(content.video?.youtubeUrl);
 
   return (
     <>
@@ -64,7 +67,7 @@ export default async function AboutPage({ params }: Props) {
         targetId={SECTIONS[0].key}
       />
 
-      {SECTIONS.map(({ key, imageSide, background, cells }) => (
+      {SECTIONS.map(({ key, imageSide, background, cells }, index) => (
         <AboutSection
           key={key}
           id={key}
@@ -74,8 +77,17 @@ export default async function AboutPage({ params }: Props) {
           imageSide={imageSide}
           background={background}
           cells={[...cells]}
+          isLast={!videoId && index === SECTIONS.length - 1}
         />
       ))}
+
+      {videoId && (
+        <AboutVideo
+          videoId={videoId}
+          title={pick(content.video?.title, t("video_title"))}
+          description={content.video?.description}
+        />
+      )}
     </>
   );
 }
