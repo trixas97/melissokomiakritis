@@ -126,7 +126,8 @@ export default async function HomePage({ params }: Props) {
           </div>
         </div>
 
-        <SectionFade edge="bottom" className="h-36" />
+        {/* Dark theme only: in light the video meets the cards section directly */}
+        <SectionFade edge="bottom" className="h-36 light:hidden" />
       </section>
 
       {/* ════════ PRODUCT CATEGORIES ════════ */}
