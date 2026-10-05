@@ -9,6 +9,15 @@ import { LABEL_KEYS } from "../globals/Labels";
 
 const ABOUT_VIDEO_URL = "https://www.youtube.com/watch?v=4xrMltwE6YI";
 
+// The client's company story (About page introduction)
+const STORY_EL =
+  "Η Μελισσοκομία Κρήτης είναι μια ελληνική επιχείρηση που δραστηριοποιείται στον τομέα της μελισσοκομίας με εξειδίκευση τα τελευταία χρόνια στην παραγωγή βασιλισσών, παραφυάδων και βασιλικών κελιών. Οι ρίζες της επιχείρησης μας ξεκινούν το 1960 με την ίδρυση της από τον Φραγκίσκο Μαραγκουδάκη στο χωριό Σάσαλος των Χανίων. Το 1989 ο γιος του Λευτέρης αναλαμβάνει την επιχείρηση, εκσυγχρονίζοντας την μέρα με την μέρα, προσπαθώντας πάντα για ένα καλύτερο δυνατό αποτέλεσμα. Τα τελευταία 20 χρόνια ο Λευτέρης Μαραγκουδάκης διαθέτοντας πλέον την απαραίτητη εμπειρία και γνώση πάνω στην δουλειά αποφασίζει να αναπτύξει την επιχείρηση μας ένα επίπεδο παραπάνω και να επεκταθεί στον τομέα της βασιλοτροφίας. Πλέον η Μελισσοκομία Κρήτης, με αφετηρία τα Χανιά, μετράει ένα μεγάλο και σταθερό πελατολόγιο σε όλη την Ελλάδα αλλά και εκτός των συνόρων μας.";
+
+// What the story looked like before the client's text — environments still
+// showing it get the real story
+const STORY_EL_PLACEHOLDER =
+  "Εδώ θα μπει η ιστορία του μελισσοκομείου: πώς ξεκίνησε, ποιοι είμαστε και τι μας κινεί.";
+
 type Messages = Record<string, Record<string, string>>;
 const messages: Record<"el" | "en", Messages> = { el, en } as unknown as Record<"el" | "en", Messages>;
 
@@ -149,13 +158,12 @@ export async function seedContent(payload: Payload) {
     payload.logger.info("Seeded About page copy");
   }
 
-  // "Our story" hero — the description is openly a placeholder, since the story
-  // itself has to come from the client
+  // "Our story" hero and introduction — the client's story in Greek; the
+  // English description is still a placeholder until it's translated
   const storyCopy = {
     el: {
-      title: "Η Ιστορία μας",
-      description:
-        "Εδώ θα μπει η ιστορία του μελισσοκομείου: πώς ξεκίνησε, ποιοι είμαστε και τι μας κινεί.",
+      title: "Η ιστορία της Μελισσοκομία Κρήτης",
+      description: STORY_EL,
     },
     en: {
       title: "Our Story",
@@ -168,6 +176,14 @@ export async function seedContent(payload: Payload) {
       await payload.updateGlobal({ slug: "about-page", locale, data: { story: storyCopy[locale] } });
     }
     payload.logger.info("Seeded About page story");
+  } else if (aboutPage.story.description === STORY_EL_PLACEHOLDER) {
+    const current = await payload.findGlobal({ slug: "about-page", locale: "el", depth: 0 });
+    await payload.updateGlobal({
+      slug: "about-page",
+      locale: "el",
+      data: { story: { ...current.story, ...storyCopy.el } },
+    });
+    payload.logger.info("Replaced the About page story placeholder");
   }
 
   // The client's YouTube video, under the fallback heading from the message files
@@ -177,6 +193,41 @@ export async function seedContent(payload: Payload) {
       await payload.updateGlobal({ slug: "about-page", locale, data: { video } });
     }
     payload.logger.info("Seeded About page video");
+  }
+
+  // Eyebrows, the introduction title and topic buttons, added with the
+  // full-width layout. Merged into each group so the texts above stay as they are.
+  const aboutLayoutCopy = {
+    el: {
+      story: { eyebrow: "Η Ιστορία μας", introTitle: "Ο δρόμος μας προς την κορυφή" },
+      beekeeping: { eyebrow: "Το μελισσοκομείο μας", button: {} },
+      queenRearing: { eyebrow: "Βασιλοτροφία", button: { label: "Δείτε τις βασίλισσες", link: "queens" } },
+      nucs: { eyebrow: "Παραφυάδες", button: { label: "Δείτε τις παραφυάδες", link: "nucs" } },
+    },
+    en: {
+      story: { eyebrow: "Our Story", introTitle: "Beekeeping with a love for Crete" },
+      beekeeping: { eyebrow: "Our apiary", button: {} },
+      queenRearing: { eyebrow: "Queen rearing", button: { label: "See our queens", link: "queens" } },
+      nucs: { eyebrow: "Nucs", button: { label: "See our nucs", link: "nucs" } },
+    },
+  } as const;
+
+  if (!aboutPage.beekeeping?.eyebrow) {
+    for (const locale of ["el", "en"] as const) {
+      const current = await payload.findGlobal({ slug: "about-page", locale, depth: 0 });
+      const copy = aboutLayoutCopy[locale];
+      await payload.updateGlobal({
+        slug: "about-page",
+        locale,
+        data: {
+          story: { ...current.story, ...copy.story },
+          beekeeping: { ...current.beekeeping, ...copy.beekeeping },
+          queenRearing: { ...current.queenRearing, ...copy.queenRearing },
+          nucs: { ...current.nucs, ...copy.nucs },
+        },
+      });
+    }
+    payload.logger.info("Seeded About page eyebrows and buttons");
   }
 
   // Home page — the texts the site showed before they moved into Payload.

@@ -1,6 +1,7 @@
 import * as migration_20260925_162048_initial from './20260925_162048_initial';
 import * as migration_20260930_120948_about_video from './20260930_120948_about_video';
 import * as migration_20260930_124718_light_theme from './20260930_124718_light_theme';
+import * as migration_20261005_103028_about_heineken_layout from './20261005_103028_about_heineken_layout';
 
 export const migrations = [
   {
@@ -16,6 +17,11 @@ export const migrations = [
   {
     up: migration_20260930_124718_light_theme.up,
     down: migration_20260930_124718_light_theme.down,
-    name: '20260930_124718_light_theme'
+    name: '20260930_124718_light_theme',
+  },
+  {
+    up: migration_20261005_103028_about_heineken_layout.up,
+    down: migration_20261005_103028_about_heineken_layout.down,
+    name: '20261005_103028_about_heineken_layout'
   },
 ];

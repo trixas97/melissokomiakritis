@@ -4,52 +4,30 @@ import { getAboutPage } from "@/lib/content";
 import { resolveImage } from "@/lib/media";
 import { pick } from "@/lib/text";
 import { parseYouTubeId } from "@/lib/youtube";
-import AboutSection from "@/components/about/AboutSection";
-import AboutVideo from "@/components/about/AboutVideo";
+import type { AboutPage as AboutPageContent } from "@/payload-types";
 import AboutStoryHero from "@/components/about/AboutStoryHero";
+import AboutIntro from "@/components/about/AboutIntro";
+import AboutSplit from "@/components/about/AboutSplit";
+import AboutBand from "@/components/about/AboutBand";
+import AboutVideo from "@/components/about/AboutVideo";
 
 type Props = {
   params: Promise<{ locale: string }>;
 };
 
-// Fixed layout per topic, following the client's brief; the words and photos
-// come from /admin → About page.
-// The large cell sits on the text side so it never covers the photo.
-const SECTIONS = [
-  {
-    key: "beekeeping",
-    imageSide: "right",
-    background: "photo-amber",
-    cells: [
-      { className: "-top-16 -left-12 w-72 text-brand-amber opacity-[0.05]" },
-      { className: "-bottom-12 right-[6%] w-40 text-ink opacity-[0.04]" },
-      { className: "top-[22%] left-[46%] w-10 text-brand-amber opacity-[0.08]" },
-      { className: "bottom-[14%] left-[8%] w-8 text-ink opacity-[0.06]" },
-    ],
-  },
-  {
-    key: "queenRearing",
-    imageSide: "left",
-    background: "photo-forest",
-    cells: [
-      { className: "-top-14 -right-10 w-72 text-brand-amber opacity-[0.05]" },
-      { className: "-bottom-14 left-[4%] w-44 text-ink opacity-[0.04]" },
-      { className: "top-[18%] right-[44%] w-9 text-ink opacity-[0.06]" },
-      { className: "bottom-[16%] right-[10%] w-12 text-brand-amber opacity-[0.08]" },
-    ],
-  },
-  {
-    key: "nucs",
-    imageSide: "right",
-    background: "photo-olive",
-    cells: [
-      { className: "-bottom-16 -left-10 w-64 text-brand-amber opacity-[0.05]" },
-      { className: "-top-10 right-[10%] w-36 text-ink opacity-[0.04]" },
-      { className: "top-[16%] left-[10%] w-12 text-brand-amber opacity-[0.08]" },
-      { className: "bottom-[20%] left-[47%] w-8 text-ink opacity-[0.06]" },
-    ],
-  },
+// Fixed layout per topic: the first sits beside a photo, the rest are
+// full-width photo bands. The words and photos come from /admin → About page.
+const TOPICS = [
+  { key: "beekeeping", Layout: AboutSplit },
+  { key: "queenRearing", Layout: AboutBand },
+  { key: "nucs", Layout: AboutBand },
 ] as const;
+
+type Topic = NonNullable<AboutPageContent[(typeof TOPICS)[number]["key"]]>;
+
+// The button only shows when the owner gave it both a label and a page
+const resolveButton = (button: Topic["button"]) =>
+  button?.label?.trim() && button.link ? { label: button.label, href: `/${button.link}` } : null;
 
 export default async function AboutPage({ params }: Props) {
   const { locale } = await params;
@@ -60,34 +38,34 @@ export default async function AboutPage({ params }: Props) {
   return (
     <>
       <AboutStoryHero
+        eyebrow={content.story?.eyebrow}
         title={pick(content.story?.title, t("story_title"))}
-        description={content.story?.description}
         image={resolveImage(content.story?.image)}
-        discoverLabel={t("discover")}
-        targetId={SECTIONS[0].key}
       />
 
-      {SECTIONS.map(({ key, imageSide, background, cells }, index) => (
-        <AboutSection
-          key={key}
-          id={key}
-          title={content[key]?.title}
-          description={content[key]?.description}
-          image={resolveImage(content[key]?.image)}
-          imageSide={imageSide}
-          background={background}
-          cells={[...cells]}
-          isLast={!videoId && index === SECTIONS.length - 1}
-        />
-      ))}
+      <AboutIntro title={content.story?.introTitle} description={content.story?.description} />
 
-      {videoId && (
-        <AboutVideo
-          videoId={videoId}
-          title={pick(content.video?.title, t("video_title"))}
-          description={content.video?.description}
-        />
-      )}
+      <div className="flex flex-col gap-16 py-20 sm:gap-20 sm:py-28">
+        {TOPICS.map(({ key, Layout }) => (
+          <Layout
+            key={key}
+            id={key}
+            eyebrow={content[key]?.eyebrow}
+            title={content[key]?.title}
+            description={content[key]?.description}
+            button={resolveButton(content[key]?.button)}
+            image={resolveImage(content[key]?.image)}
+          />
+        ))}
+
+        {videoId && (
+          <AboutVideo
+            videoId={videoId}
+            title={pick(content.video?.title, t("video_title"))}
+            description={content.video?.description}
+          />
+        )}
+      </div>
     </>
   );
 }

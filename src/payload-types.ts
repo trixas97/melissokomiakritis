@@ -538,48 +538,92 @@ export interface HomePage {
 export interface AboutPage {
   id: number;
   story?: {
+    /**
+     * Optional small capitals above the title, e.g. “Since 1990”.
+     */
+    eyebrow?: string | null;
+    /**
+     * Large title over the photo.
+     */
     title?: string | null;
+    /**
+     * Leave empty to show an empty tinted frame.
+     */
+    image?: (number | null) | Media;
+    /**
+     * Heading of the centred text under the photo.
+     */
+    introTitle?: string | null;
     /**
      * Leave a blank line between paragraphs.
      */
     description?: string | null;
-    /**
-     * Leave empty to show the placeholder photo.
-     */
-    image?: (number | null) | Media;
   };
   beekeeping?: {
+    /**
+     * Optional small capitals above the title, e.g. “Since 1990”.
+     */
+    eyebrow?: string | null;
     title?: string | null;
     /**
      * Leave a blank line between paragraphs.
      */
     description?: string | null;
     /**
-     * Leave empty to show the placeholder photo.
+     * Leave empty to show an empty tinted frame.
      */
     image?: (number | null) | Media;
+    /**
+     * Optional. Leave the label empty to hide the button.
+     */
+    button?: {
+      label?: string | null;
+      link?: ('queens' | 'cells' | 'nucs' | 'gallery' | 'faqs' | 'contact') | null;
+    };
   };
   queenRearing?: {
+    /**
+     * Optional small capitals above the title, e.g. “Since 1990”.
+     */
+    eyebrow?: string | null;
     title?: string | null;
     /**
      * Leave a blank line between paragraphs.
      */
     description?: string | null;
     /**
-     * Leave empty to show the placeholder photo.
+     * Leave empty to show an empty tinted frame.
      */
     image?: (number | null) | Media;
+    /**
+     * Optional. Leave the label empty to hide the button.
+     */
+    button?: {
+      label?: string | null;
+      link?: ('queens' | 'cells' | 'nucs' | 'gallery' | 'faqs' | 'contact') | null;
+    };
   };
   nucs?: {
+    /**
+     * Optional small capitals above the title, e.g. “Since 1990”.
+     */
+    eyebrow?: string | null;
     title?: string | null;
     /**
      * Leave a blank line between paragraphs.
      */
     description?: string | null;
     /**
-     * Leave empty to show the placeholder photo.
+     * Leave empty to show an empty tinted frame.
      */
     image?: (number | null) | Media;
+    /**
+     * Optional. Leave the label empty to hide the button.
+     */
+    button?: {
+      label?: string | null;
+      link?: ('queens' | 'cells' | 'nucs' | 'gallery' | 'faqs' | 'contact') | null;
+    };
   };
   video?: {
     title?: string | null;
@@ -701,9 +745,6 @@ export interface Label {
   home?: {
     available?: string | null;
   };
-  about?: {
-    discover?: string | null;
-  };
   gallery?: {
     title?: string | null;
   };
@@ -799,30 +840,53 @@ export interface AboutPageSelect<T extends boolean = true> {
   story?:
     | T
     | {
+        eyebrow?: T;
         title?: T;
-        description?: T;
         image?: T;
+        introTitle?: T;
+        description?: T;
       };
   beekeeping?:
     | T
     | {
+        eyebrow?: T;
         title?: T;
         description?: T;
         image?: T;
+        button?:
+          | T
+          | {
+              label?: T;
+              link?: T;
+            };
       };
   queenRearing?:
     | T
     | {
+        eyebrow?: T;
         title?: T;
         description?: T;
         image?: T;
+        button?:
+          | T
+          | {
+              label?: T;
+              link?: T;
+            };
       };
   nucs?:
     | T
     | {
+        eyebrow?: T;
         title?: T;
         description?: T;
         image?: T;
+        button?:
+          | T
+          | {
+              label?: T;
+              link?: T;
+            };
       };
   video?:
     | T
@@ -938,11 +1002,6 @@ export interface LabelsSelect<T extends boolean = true> {
     | T
     | {
         available?: T;
-      };
-  about?:
-    | T
-    | {
-        discover?: T;
       };
   gallery?:
     | T
